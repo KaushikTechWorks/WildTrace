@@ -1,4 +1,4 @@
-import { MapPin, Leaf, Users, BarChart3, Shield, Globe } from "lucide-react";
+import { MapPin, Leaf, Users, BarChart3, Shield, Globe, Heart } from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -18,8 +18,8 @@ export default function HomePage() {
             </div>
             <nav className="hidden md:flex space-x-8">
               <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Dashboard</a>
-              <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Species Map</a>
-              <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Conservation</a>
+              <a href="/species-map" className="text-gray-700 hover:text-green-600 transition-colors">Species Map</a>
+              <a href="/start-project" className="text-gray-700 hover:text-green-600 transition-colors">School Projects</a>
               <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Community</a>
             </nav>
           </div>
@@ -39,9 +39,9 @@ export default function HomePage() {
               Together, we can make a difference in protecting endangered species and their habitats.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="conservation-gradient text-white px-8 py-4 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+              <a href="/species-map" className="conservation-gradient text-white px-8 py-4 rounded-lg font-semibold hover:opacity-90 transition-opacity text-center">
                 Explore Species Map
-              </button>
+              </a>
               <button className="border-2 border-green-600 text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors">
                 Learn More
               </button>
@@ -91,6 +91,91 @@ export default function HomePage() {
               title="Conservation Actions"
               description="Find and support local conservation programs, eco-tourism opportunities, and sustainable practices."
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Educational Impact Section */}
+      <section className="py-20 bg-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Inspiring the Next Generation of Conservationists
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Empower students and educators with engaging conservation projects that make a real difference for endangered species.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+              <div className="conservation-gradient p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Users className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">School Projects</h3>
+              <p className="text-gray-600 mb-4">
+                Guide students through meaningful conservation projects that fundraise for local wildlife sanctuaries.
+              </p>
+              <div className="text-2xl font-bold text-blue-600 mb-1">150+</div>
+              <div className="text-sm text-gray-500">Active School Projects</div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+              <div className="conservation-gradient p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Shield className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Wildlife Sanctuaries</h3>
+              <p className="text-gray-600 mb-4">
+                Connect with local sanctuaries for educational visits, volunteer opportunities, and fundraising support.
+              </p>
+              <div className="text-2xl font-bold text-green-600 mb-1">85</div>
+              <div className="text-sm text-gray-500">Partner Sanctuaries</div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+              <div className="conservation-gradient p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Heart className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Community Impact</h3>
+              <p className="text-gray-600 mb-4">
+                Inspire community action through student-led conservation campaigns and educational outreach.
+              </p>
+              <div className="text-2xl font-bold text-purple-600 mb-1">$2.1M</div>
+              <div className="text-sm text-gray-500">Raised for Conservation</div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="md:flex items-center space-y-6 md:space-y-0 md:space-x-8">
+              <div className="md:flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Start a Conservation Project?</h3>
+                <p className="text-gray-600 mb-6">
+                  Our step-by-step guide helps teachers and students create meaningful conservation projects that educate, 
+                  engage, and raise funds for endangered species protection. Get educational resources, connect with 
+                  wildlife sanctuaries, and inspire your community to take action.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <a href="/start-project" className="conservation-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity text-center">
+                    Start School Project
+                  </a>
+                  <a href="/species-map" className="border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors text-center">
+                    Explore Species Map
+                  </a>
+                </div>
+              </div>
+              <div className="md:w-80 bg-green-50 rounded-lg p-6">
+                <h4 className="font-semibold text-green-900 mb-3">Featured Success Story</h4>
+                <div className="text-sm text-green-800">
+                  <p className="mb-2">
+                    <strong>Greenwood Elementary</strong> raised <strong>$3,750</strong> for tiger conservation through 
+                    their &ldquo;Save the Tigers&rdquo; project, involving 85 students in art exhibitions and community outreach.
+                  </p>
+                  <p className="text-green-600 font-medium">
+                    &ldquo;Our students are now passionate advocates for wildlife conservation!&rdquo; - Ms. Sarah Johnson, Teacher
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

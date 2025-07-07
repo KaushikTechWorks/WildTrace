@@ -1,232 +1,211 @@
 // Core species and conservation types for WildTrace
 
+// Species and Conservation Types
 export interface Species {
   id: string;
   scientificName: string;
   commonName: string;
-  taxonomyKingdom: string;
-  taxonomyPhylum: string;
-  taxonomyClass: string;
-  taxonomyOrder: string;
-  taxonomyFamily: string;
-  taxonomyGenus: string;
-  conservationStatus: ConservationStatus;
-  populationTrend: PopulationTrend;
-  lastAssessment: string;
-  description?: string;
-  imageUrl?: string;
-  habitat: string[];
-  threats: Threat[];
-  geographicRange: GeographicRange[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export enum ConservationStatus {
-  EXTINCT = 'EX',
-  EXTINCT_IN_WILD = 'EW',
-  CRITICALLY_ENDANGERED = 'CR',
-  ENDANGERED = 'EN',
-  VULNERABLE = 'VU',
-  NEAR_THREATENED = 'NT',
-  LEAST_CONCERN = 'LC',
-  DATA_DEFICIENT = 'DD',
-  NOT_EVALUATED = 'NE',
-}
-
-export enum PopulationTrend {
-  INCREASING = 'increasing',
-  STABLE = 'stable',
-  DECREASING = 'decreasing',
-  UNKNOWN = 'unknown',
-}
-
-export interface Threat {
-  id: string;
-  category: ThreatCategory;
-  severity: ThreatSeverity;
+  conservationStatus: 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'EX' | 'EW';
+  kingdom: string;
+  phylum: string;
+  class: string;
+  order: string;
+  family: string;
+  genus: string;
   description: string;
-  timing: ThreatTiming;
-}
-
-export enum ThreatCategory {
-  HABITAT_LOSS = 'habitat_loss',
-  OVEREXPLOITATION = 'overexploitation',
-  INVASIVE_SPECIES = 'invasive_species',
-  CLIMATE_CHANGE = 'climate_change',
-  POLLUTION = 'pollution',
-  DISEASE = 'disease',
-  HUMAN_DISTURBANCE = 'human_disturbance',
-}
-
-export enum ThreatSeverity {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  VERY_HIGH = 'very_high',
-}
-
-export enum ThreatTiming {
-  PAST = 'past',
-  ONGOING = 'ongoing',
-  FUTURE = 'future',
-}
-
-export interface GeographicRange {
-  id: string;
-  country: string;
-  region?: string;
-  coordinates: {
+  threats: string[];
+  habitat: string;
+  population: number | null;
+  populationTrend: 'increasing' | 'decreasing' | 'stable' | 'unknown';
+  lastAssessed: Date;
+  imageUrl: string | null;
+  iucnId: string | null;
+  gbifId: string | null;
+  location: {
     latitude: number;
     longitude: number;
+    region: string;
+    country: string;
+    protectedArea?: string;
   };
-  boundingBox?: {
+}
+
+export interface ConservationProject {
+  id: string;
+  title: string;
+  description: string;
+  location: {
+    latitude: number;
+    longitude: number;
+    region: string;
+    country: string;
+  };
+  targetSpecies: Species[];
+  organization: string;
+  website: string | null;
+  donationUrl: string | null;
+  volunteerUrl: string | null;
+  fundingGoal: number | null;
+  fundingRaised: number | null;
+  status: 'active' | 'completed' | 'planning' | 'paused';
+  startDate: Date;
+  endDate: Date | null;
+  impact: {
+    speciesProtected: number;
+    habitatRestored: number; // in hectares
+    communityMembers: number;
+  };
+  images: string[];
+  contactEmail: string | null;
+}
+
+export interface WildlifeSanctuary {
+  id: string;
+  name: string;
+  description: string;
+  location: {
+    latitude: number;
+    longitude: number;
+    region: string;
+    country: string;
+    address: string;
+  };
+  area: number; // in hectares
+  establishedYear: number;
+  speciesCount: number;
+  endangeredSpecies: Species[];
+  facilities: string[];
+  programs: {
+    education: boolean;
+    research: boolean;
+    breeding: boolean;
+    rehabilitation: boolean;
+    volunteer: boolean;
+  };
+  visitingHours: {
+    open: string;
+    close: string;
+    days: string[];
+  };
+  admissionFee: number | null;
+  donationGoal: number | null;
+  donationRaised: number | null;
+  website: string | null;
+  phone: string | null;
+  email: string | null;
+  socialMedia: {
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+  };
+  images: string[];
+  achievements: string[];
+}
+
+export interface SchoolProject {
+  id: string;
+  schoolName: string;
+  projectTitle: string;
+  description: string;
+  targetSpecies: Species;
+  targetSanctuary: WildlifeSanctuary | null;
+  students: {
+    count: number;
+    ageGroup: string;
+    grade: string;
+  };
+  teacher: {
+    name: string;
+    email: string;
+  };
+  fundraisingGoal: number;
+  fundraisingRaised: number;
+  activities: string[];
+  timeline: {
+    startDate: Date;
+    endDate: Date;
+    milestones: {
+      date: Date;
+      description: string;
+      completed: boolean;
+    }[];
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+    city: string;
+    state: string;
+    country: string;
+  };
+  status: 'planning' | 'active' | 'completed' | 'paused';
+  impact: {
+    fundsRaised: number;
+    studentsInvolved: number;
+    communityReach: number;
+  };
+  images: string[];
+  updates: {
+    date: Date;
+    title: string;
+    content: string;
+    images: string[];
+  }[];
+}
+
+export interface RegionData {
+  id: string;
+  name: string;
+  bounds: {
     north: number;
     south: number;
     east: number;
     west: number;
   };
-  occurrenceType: OccurrenceType;
-  lastSeen?: string;
-  populationEstimate?: number;
+  endangeredSpecies: Species[];
+  conservationProjects: ConservationProject[];
+  wildlifeSanctuaries: WildlifeSanctuary[];
+  schoolProjects: SchoolProject[];
+  statistics: {
+    totalSpecies: number;
+    endangeredCount: number;
+    criticallyEndangeredCount: number;
+    protectedAreas: number;
+    activeProjects: number;
+    fundingNeeded: number;
+    successStories: number;
+  };
 }
 
-export enum OccurrenceType {
-  NATIVE = 'native',
-  INTRODUCED = 'introduced',
-  VAGRANT = 'vagrant',
-  EXTINCT = 'extinct',
-  POSSIBLY_EXTINCT = 'possibly_extinct',
+export interface MapFilters {
+  conservationStatus: string[];
+  animalClass: string[];
+  region: string[];
+  showProjects: boolean;
+  showSanctuaries: boolean;
+  showSchoolProjects: boolean;
+  threatLevel: 'all' | 'high' | 'medium' | 'low';
 }
 
-export interface ConservationProject {
+export interface FundraisingCampaign {
   id: string;
-  name: string;
+  title: string;
   description: string;
-  organization: Organization;
-  targetSpecies: Species[];
-  location: GeographicRange;
-  startDate: string;
-  endDate?: string;
-  status: ProjectStatus;
-  budget?: number;
-  fundingGoal?: number;
-  supporters: number;
-  outcomes: ProjectOutcome[];
-  tags: string[];
-  websiteUrl?: string;
-  contactEmail?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export enum ProjectStatus {
-  PLANNING = 'planning',
-  ACTIVE = 'active',
-  COMPLETED = 'completed',
-  SUSPENDED = 'suspended',
-  CANCELLED = 'cancelled',
-}
-
-export interface ProjectOutcome {
-  id: string;
-  description: string;
-  measuredValue?: number;
-  targetValue?: number;
-  unit?: string;
-  achievedAt?: string;
-}
-
-export interface Organization {
-  id: string;
-  name: string;
-  type: OrganizationType;
-  description?: string;
-  websiteUrl?: string;
-  logoUrl?: string;
-  contactEmail?: string;
-  headquarters?: GeographicRange;
-  verified: boolean;
-  createdAt: string;
-}
-
-export enum OrganizationType {
-  NGO = 'ngo',
-  GOVERNMENT = 'government',
-  RESEARCH = 'research',
-  COMMUNITY = 'community',
-  CORPORATE = 'corporate',
-  INTERNATIONAL = 'international',
-}
-
-export interface User {
-  id: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-  role: UserRole;
-  organization?: Organization;
-  interests: string[];
-  location?: GeographicRange;
-  verifiedResearcher: boolean;
-  createdAt: string;
-  lastActive: string;
-}
-
-export enum UserRole {
-  PUBLIC = 'public',
-  RESEARCHER = 'researcher',
-  CONSERVATIONIST = 'conservationist',
-  EDUCATOR = 'educator',
-  ADMIN = 'admin',
-}
-
-export interface Observation {
-  id: string;
-  species: Species;
-  observer: User;
-  location: GeographicRange;
-  observedAt: string;
-  count?: number;
-  behavior?: string;
-  habitat?: string;
-  weather?: string;
-  photos?: string[];
-  verified: boolean;
-  verifiedBy?: User;
-  verifiedAt?: string;
-  notes?: string;
-  createdAt: string;
-}
-
-export interface MapLayerData {
-  type: 'species' | 'threats' | 'projects' | 'protected_areas';
-  data: any[];
-  visible: boolean;
-  opacity: number;
-  color?: string;
-}
-
-export interface SearchFilters {
-  conservationStatus?: ConservationStatus[];
-  taxonomyClass?: string[];
-  threats?: ThreatCategory[];
-  region?: string[];
-  populationTrend?: PopulationTrend[];
-  lastAssessmentAfter?: string;
-  hasActiveProjects?: boolean;
-}
-
-export interface DashboardStats {
-  totalSpecies: number;
-  endangeredSpecies: number;
-  activeProjects: number;
-  countriesCovered: number;
-  recentObservations: number;
-  monthlyTrends: {
-    month: string;
-    newObservations: number;
-    newProjects: number;
+  targetAmount: number;
+  raisedAmount: number;
+  currency: string;
+  endDate: Date;
+  beneficiary: WildlifeSanctuary | ConservationProject;
+  donorCount: number;
+  updates: {
+    date: Date;
+    title: string;
+    content: string;
+    images: string[];
+  }[];
+  rewards: {
+    amount: number;
+    title: string;
+    description: string;
+    estimatedDelivery: Date;
   }[];
 }

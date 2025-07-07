@@ -9,7 +9,11 @@ export const metadata: Metadata = {
   description: "Track endangered species and conservation efforts using public biodiversity datasets. Interactive maps and actionable insights for conservationists, researchers, and the public.",
   keywords: ["conservation", "endangered species", "biodiversity", "wildlife", "tracking", "maps"],
   authors: [{ name: "WildTrace Team" }],
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
