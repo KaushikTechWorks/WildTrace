@@ -503,7 +503,7 @@ export default function SpeciesMapPage() {
               </div>
               <div className="text-left">
                 <h1 className="text-5xl font-bold text-white mb-2 tracking-tight">
-                  Wildlife Conservation Map
+                  Conservation Explorer
                 </h1>
                 <p className="text-xl text-emerald-100 font-light leading-relaxed max-w-2xl">
                   Discover and support wildlife protection efforts
