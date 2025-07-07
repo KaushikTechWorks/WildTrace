@@ -506,10 +506,7 @@ export default function SpeciesMapPage() {
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex justify-center mb-4 sm:mb-6">
               <div className="text-center">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
-                  Conservation Explorer
-                </h1>
-                <p className="text-lg sm:text-xl text-emerald-100 font-light leading-relaxed max-w-2xl px-4 sm:px-0">
+                <p className="text-xl sm:text-2xl text-emerald-100 font-light leading-relaxed max-w-2xl px-4 sm:px-0">
                   Discover and support wildlife protection efforts
                 </p>
               </div>
