@@ -18,7 +18,7 @@ export default function HomePage() {
             </div>
             <nav className="hidden md:flex space-x-8">
               <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Dashboard</a>
-              <a href="/species-map" className="text-gray-700 hover:text-green-600 transition-colors">Species Map</a>
+              <a href="/conservation-map" className="text-gray-700 hover:text-green-600 transition-colors">Conservation Map</a>
               <a href="/start-project" className="text-gray-700 hover:text-green-600 transition-colors">School Projects</a>
               <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Community</a>
             </nav>
@@ -39,8 +39,8 @@ export default function HomePage() {
               Together, we can make a difference in protecting endangered species and their habitats.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/species-map" className="conservation-gradient text-white px-8 py-4 rounded-lg font-semibold hover:opacity-90 transition-opacity text-center">
-                Explore Species Map
+              <a href="/conservation-map" className="conservation-gradient text-white px-8 py-4 rounded-lg font-semibold hover:opacity-90 transition-opacity text-center">
+                Explore Conservation Map
               </a>
               <button className="border-2 border-green-600 text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors">
                 Learn More
@@ -63,7 +63,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard
               icon={<MapPin className="h-8 w-8 text-green-600" />}
-              title="Interactive Species Maps"
+              title="Interactive Conservation Maps"
               description="Visualize endangered species locations, habitats, and migration patterns with real-time data from global biodiversity databases."
             />
             <FeatureCard
@@ -158,8 +158,8 @@ export default function HomePage() {
                   <a href="/start-project" className="conservation-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity text-center">
                     Start School Project
                   </a>
-                  <a href="/species-map" className="border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors text-center">
-                    Explore Species Map
+                  <a href="/conservation-map" className="border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors text-center">
+                    Explore Conservation Map
                   </a>
                 </div>
               </div>

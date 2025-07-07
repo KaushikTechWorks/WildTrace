@@ -8,7 +8,7 @@ export default function SpeciesMapLoading() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-3">
             <MapPin className="w-8 h-8 text-emerald-600" />
-            <h1 className="text-2xl font-bold text-gray-900">Species Map</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Conservation Map</h1>
           </div>
         </div>
       </div>
@@ -18,7 +18,7 @@ export default function SpeciesMapLoading() {
         <div className="text-center">
           <Loader2 className="w-16 h-16 text-emerald-600 animate-spin mx-auto mb-6" />
           <h2 className="text-2xl font-semibold text-gray-900 mb-3">
-            Loading Species Map
+            Loading Conservation Map
           </h2>
           <p className="text-gray-600 mb-4">
             Preparing interactive conservation data...

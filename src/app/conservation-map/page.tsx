@@ -459,7 +459,7 @@ export default function SpeciesMapPage() {
           <p className="text-gray-600 mb-6">
             {isProduction 
               ? "The map service is temporarily unavailable. Please try again later."
-              : "Please configure your Mapbox access token to view the species map."
+              : "Please configure your Mapbox access token to view the conservation map."
             }
           </p>
           {!isProduction && (
@@ -492,7 +492,7 @@ export default function SpeciesMapPage() {
             </div>
             <nav className="hidden md:flex space-x-8">
               <a href="/" className="text-gray-700 hover:text-green-600 transition-colors">Dashboard</a>
-              <a href="/species-map" className="text-green-600 font-medium">Species Map</a>
+              <a href="/conservation-map" className="text-green-600 font-medium">Conservation Map</a>
               <a href="/start-project" className="text-gray-700 hover:text-green-600 transition-colors">School Projects</a>
               <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Community</a>
             </nav>

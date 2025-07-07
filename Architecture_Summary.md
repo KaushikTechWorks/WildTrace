@@ -75,7 +75,7 @@ src/
 ├── app/                          # Next.js App Router
 │   ├── layout.tsx               # Root layout
 │   ├── page.tsx                 # Landing page
-│   ├── species-map/             # Interactive map feature
+│   ├── conservation-map/        # Interactive map feature
 │   │   ├── page.tsx            # Main map interface
 │   │   ├── loading.tsx         # Loading state
 │   │   └── error.tsx           # Error boundary
@@ -99,7 +99,7 @@ src/
 
 ---
 
-## 🗺️ **Species Map Page Architecture**
+## 🗺️ **Conservation Map Page Architecture**
 
 ### **Component Structure**
 ```
@@ -454,7 +454,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 - **Error Boundaries**: Graceful error handling
 
 ### **File Naming**
-- **Pages**: kebab-case (species-map)
+- **Pages**: kebab-case (conservation-map)
 - **Components**: PascalCase (SpeciesMarker)
 - **Hooks**: camelCase with 'use' prefix (useMapData)
 - **Types**: PascalCase with descriptive names

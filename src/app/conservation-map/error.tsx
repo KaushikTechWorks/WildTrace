@@ -12,7 +12,7 @@ export default function SpeciesMapError({
   reset: () => void
 }) {
   useEffect(() => {
-    console.error('Species Map error:', error)
+    console.error('Conservation Map error:', error)
   }, [error])
 
   return (
@@ -27,7 +27,7 @@ export default function SpeciesMapError({
         </h2>
         
         <p className="text-gray-600 mb-4">
-          We encountered an issue loading the species map. This could be due to:
+          We encountered an issue loading the conservation map. This could be due to:
         </p>
         
         <ul className="text-left text-sm text-gray-600 mb-6 space-y-1">
