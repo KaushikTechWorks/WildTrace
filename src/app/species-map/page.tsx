@@ -470,8 +470,31 @@ export default function SpeciesMapPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header Navigation */}
+      <header className="bg-white shadow-sm border-b border-green-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-3">
+              <div className="conservation-gradient p-2 rounded-lg">
+                <Leaf className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">WildTrace</h1>
+                <p className="text-sm text-gray-600">Conservation in Action</p>
+              </div>
+            </div>
+            <nav className="hidden md:flex space-x-8">
+              <a href="/" className="text-gray-700 hover:text-green-600 transition-colors">Dashboard</a>
+              <a href="/species-map" className="text-green-600 font-medium">Species Map</a>
+              <a href="/start-project" className="text-gray-700 hover:text-green-600 transition-colors">School Projects</a>
+              <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Community</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+
       {/* Enhanced Header */}
-      <div className="bg-gradient-to-br from-green-600 via-green-700 to-emerald-800 shadow-xl border-b border-green-500/20">
+      <div className="bg-gradient-to-br from-teal-600 via-emerald-700 to-green-800 shadow-xl border-b border-green-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-6">
@@ -479,10 +502,10 @@ export default function SpeciesMapPage() {
                 <MapPin className="h-10 w-10 text-white drop-shadow-lg" />
               </div>
               <div className="text-left">
-                <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
+                <h1 className="text-5xl font-bold text-white mb-2 tracking-tight">
                   Wildlife Conservation Map
                 </h1>
-                <p className="text-lg md:text-xl text-emerald-100 font-light leading-relaxed max-w-2xl">
+                <p className="text-xl text-emerald-100 font-light leading-relaxed max-w-2xl">
                   Discover and support wildlife protection efforts
                 </p>
               </div>
@@ -723,11 +746,11 @@ export default function SpeciesMapPage() {
               {/* Enhanced Content Section */}
               <div className="p-6">
                 <div className="mb-4">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2 leading-tight">
                     {selectedMarker.data.name}
                   </h3>
                   {selectedMarker.type === 'species' && (
-                    <p className="text-lg text-gray-600 italic font-medium">
+                    <p className="text-gray-600 italic font-medium">
                       {selectedMarker.data.scientificName}
                     </p>
                   )}
