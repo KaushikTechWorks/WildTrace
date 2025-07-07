@@ -14,7 +14,7 @@ export default function NotFound() {
             Species Not Found
           </h2>
           <p className="text-gray-600 text-sm leading-relaxed">
-            The conservation page you're looking for seems to have migrated to a different habitat.
+            The conservation page you&apos;re looking for seems to have migrated to a different habitat.
           </p>
         </div>
 
@@ -37,7 +37,7 @@ export default function NotFound() {
         </div>
 
         <p className="text-xs text-gray-500 mt-6">
-          Every species matters in conservation - let's find what you're looking for.
+          Every species matters in conservation - let&apos;s find what you&apos;re looking for.
         </p>
       </div>
     </div>

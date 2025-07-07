@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { Search, Filter, MapPin, Leaf, GraduationCap, Building, X, ChevronDown } from 'lucide-react';
 
@@ -295,45 +295,7 @@ export default function SpeciesMapPage() {
     schoolProjects: true
   });
 
-  // Initialize map
-  useEffect(() => {
-    if (!MAPBOX_TOKEN) {
-      console.error('Mapbox access token is required');
-      return;
-    }
-
-    if (!mapContainerRef.current) return;
-
-    const map = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/outdoors-v12',
-      center: [20, 20], // Global center
-      zoom: 2 // Global zoom level
-    });
-
-    map.on('load', () => {
-      setMapLoaded(true);
-      addMarkers(map);
-    });
-
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    mapRef.current = map;
-
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-      }
-    };
-  }, []);
-
-  // Update markers when filters change
-  useEffect(() => {
-    if (mapRef.current && mapLoaded) {
-      addMarkers(mapRef.current);
-    }
-  }, [filters, mapLoaded]);
-
-  const addMarkers = (map: mapboxgl.Map) => {
+  const addMarkers = useCallback((map: mapboxgl.Map) => {
     // Clear existing markers
     const existingMarkers = document.querySelectorAll('.mapboxgl-marker');
     existingMarkers.forEach(marker => marker.remove());
@@ -409,7 +371,45 @@ export default function SpeciesMapPage() {
           .addTo(map);
       });
     }
-  };
+  }, [filters, setSelectedMarker]);
+
+  // Initialize map
+  useEffect(() => {
+    if (!MAPBOX_TOKEN) {
+      console.error('Mapbox access token is required');
+      return;
+    }
+
+    if (!mapContainerRef.current) return;
+
+    const map = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: 'mapbox://styles/mapbox/outdoors-v12',
+      center: [20, 20], // Global center
+      zoom: 2 // Global zoom level
+    });
+
+    map.on('load', () => {
+      setMapLoaded(true);
+      addMarkers(map);
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    mapRef.current = map;
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+      }
+    };
+  }, []);
+
+  // Update markers when filters change
+  useEffect(() => {
+    if (mapRef.current && mapLoaded) {
+      addMarkers(mapRef.current);
+    }
+  }, [filters, mapLoaded, addMarkers]);
 
   const handleImageError = (imageUrl: string) => {
     setImageErrors(prev => new Set(prev).add(imageUrl));
