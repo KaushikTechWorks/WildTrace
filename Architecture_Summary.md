@@ -368,12 +368,36 @@ xl:          1280px+
 # Development
 npm run dev          # Start development server
 
-# Production Build
+# Production Build (Local Testing)
 npm run build        # Create optimized production build
 npm run start        # Start production server
 
-# Deployment
-fly deploy           # Deploy to Fly.io
+# Production Deployment with Build Args (Required for Next.js)
+fly deploy --build-arg NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="pk.eyJ1Ijoia2FzeTk5NjYiLCJhIjoiY21jc2MzY2dwMTJwdTJrcG15b2UwM2xkMCJ9.jCy11Lv06CoKRP5vo_lkgw" --build-arg NEXT_PUBLIC_SUPABASE_URL="https://umxkciskfoaacwhzdamd.supabase.co" --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVteGtjaXNrZm9hYWN3aHpkYW1kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4NTY0MDMsImV4cCI6MjA2NzQzMjQwM30.iht9pyj3hPXx_AVEsDk9Fbz9Yzxdo9NyRxn8Ov_u3Xs"
+
+# Alternative: Quick Deployment (if secrets are set)
+fly deploy           # Simple deployment (only if build args are in fly.toml)
+
+# Check deployment status
+fly status           # View app status
+fly logs             # View application logs
+fly open             # Open deployed app in browser
+```
+
+### **Deployment Troubleshooting**
+```bash
+# Debug deployment issues
+fly logs --app wildtrace                    # View real-time logs
+fly ssh console --app wildtrace             # SSH into running container
+fly status --app wildtrace                  # Check machine status
+
+# Environment verification
+fly secrets list --app wildtrace            # Check set secrets
+fly config env --app wildtrace              # View environment config
+
+# Restart application
+fly machine restart --app wildtrace         # Restart all machines
+fly scale count 2 --app wildtrace          # Scale to 2 instances
 ```
 
 ### **Why Fly.io?**
@@ -386,19 +410,36 @@ fly deploy           # Deploy to Fly.io
 
 ### **Environment Configuration**
 ```env
-# Required Environment Variables
-NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_token
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# Required Environment Variables (Build-time for Next.js)
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.eyJ1Ijoia2FzeTk5NjYiLCJhIjoiY21jc2MzY2dwMTJwdTJrcG15b2UwM2xkMCJ9.jCy11Lv06CoKRP5vo_lkgw
+NEXT_PUBLIC_SUPABASE_URL=https://umxkciskfoaacwhzdamd.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVteGtjaXNrZm9hYWN3aHpkYW1kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4NTY0MDMsImV4cCI6MjA2NzQzMjQwM30.iht9pyj3hPXx_AVEsDk9Fbz9Yzxdo9NyRxn8Ov_u3Xs
 
 # Optional: For server-side operations (admin functions)
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 ```
+
+### **Production Environment Variables (Fly.io)**
+```bash
+# Set production environment variables for Fly.io deployment
+fly secrets set NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="pk.eyJ1Ijoia2FzeTk5NjYiLCJhIjoiY21jc2MzY2dwMTJwdTJrcG15b2UwM2xkMCJ9.jCy11Lv06CoKRP5vo_lkgw"
+fly secrets set NEXT_PUBLIC_SUPABASE_URL="https://umxkciskfoaacwhzdamd.supabase.co"
+fly secrets set NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVteGtjaXNrZm9hYWN3aHpkYW1kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4NTY0MDMsImV4cCI6MjA2NzQzMjQwM30.iht9pyj3hPXx_AVEsDk9Fbz9Yzxdo9NyRxn8Ov_u3Xs"
+
+# View current secrets
+fly secrets list
+```
+
+### **Important Deployment Notes**
+- **Build-time Variables**: Next.js `NEXT_PUBLIC_*` variables are embedded during build
+- **Build Args Required**: Must pass env vars as build arguments for Docker builds
+- **Token Security**: Mapbox and Supabase anon keys are safe for client-side use
+- **Future Deployments**: Use documented commands below for consistent deployments
 
 ### **Supabase Configuration Notes**
 - **anon/public key**: Safe for browser use, used for client-side operations
 - **service_role key**: Server-side only, full admin access to database
-- **URL format**: `https://[project-id].supabase.co`
+- **URL format**: `https://umxkciskfoaacwhzdamd.supabase.co` (project: umxkciskfoaacwhzdamd)
 - **Row Level Security**: Recommended to enable for production data protection
 
 ---

@@ -9,6 +9,8 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 if (MAPBOX_TOKEN) {
   mapboxgl.accessToken = MAPBOX_TOKEN;
+} else {
+  console.error('NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN is not available');
 }
 
 // Mock data for global conservation map
@@ -285,6 +287,7 @@ export default function SpeciesMapPage() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(null);
@@ -377,31 +380,42 @@ export default function SpeciesMapPage() {
   useEffect(() => {
     if (!MAPBOX_TOKEN) {
       console.error('Mapbox access token is required');
+      setMapError('Mapbox access token is required. Please configure the NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN environment variable.');
       return;
     }
 
     if (!mapContainerRef.current) return;
 
-    const map = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/outdoors-v12',
-      center: [20, 20], // Global center
-      zoom: 2 // Global zoom level
-    });
+    try {
+      const map = new mapboxgl.Map({
+        container: mapContainerRef.current,
+        style: 'mapbox://styles/mapbox/outdoors-v12',
+        center: [20, 20], // Global center
+        zoom: 2 // Global zoom level
+      });
 
-    map.on('load', () => {
-      setMapLoaded(true);
-      addMarkers(map);
-    });
+      map.on('load', () => {
+        setMapLoaded(true);
+        addMarkers(map);
+      });
 
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    mapRef.current = map;
+      map.on('error', (e) => {
+        console.error('Mapbox error:', e);
+        setMapError('Failed to load the map. Please check your internet connection and try again.');
+      });
 
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-      }
-    };
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      mapRef.current = map;
+
+      return () => {
+        if (mapRef.current) {
+          mapRef.current.remove();
+        }
+      };
+    } catch (error) {
+      console.error('Map initialization error:', error);
+      setMapError('Failed to initialize the map. Please refresh the page and try again.');
+    }
   }, []);
 
   // Update markers when filters change
@@ -682,8 +696,27 @@ export default function SpeciesMapPage() {
       <div className="relative h-[calc(100vh-200px)] sm:h-[calc(100vh-250px)] lg:h-screen">
         <div ref={mapContainerRef} className="w-full h-full" />
         
+        {/* Error Overlay */}
+        {mapError && (
+          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center p-4">
+            <div className="text-center max-w-md">
+              <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <MapPin className="h-8 w-8 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Map Loading Error</h3>
+              <p className="text-gray-600 text-sm mb-4">{mapError}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+              >
+                Reload Page
+              </button>
+            </div>
+          </div>
+        )}
+        
         {/* Loading Overlay */}
-        {!mapLoaded && (
+        {!mapLoaded && !mapError && (
           <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
