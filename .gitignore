@@ -112,3 +112,23 @@ fly.toml
 
 # Redis dump file
 dump.rdb
+
+# AWS CDK
+aws-cdk/node_modules/
+aws-cdk/cdk.out/
+aws-cdk/*.js
+aws-cdk/*.d.ts
+
+# AWS Environment files
+.env.dev
+.env.staging
+.env.prod
+aws-outputs-*.env
+
+# AWS Credentials (never commit these)
+.aws/
+credentials
+config
+
+# CDK Context
+cdk.context.json

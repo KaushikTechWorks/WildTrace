@@ -1,7 +1,7 @@
 # WildTrace - Architecture Summary
 
 ## 🌍 **Application Overview**
-WildTrace is an endangered species conservation tracking application built with Next.js 14+, TypeScript, Tailwind CSS, and designed for deployment on Fly.io with Supabase as the backend.
+WildTrace is an endangered species conservation tracking application built with Next.js 14+, TypeScript, Tailwind CSS, and deployed on Fly.io with Supabase as the backend.
 
 **Purpose**: Track endangered species and conservation efforts using public biodiversity datasets, providing interactive maps and actionable insights for conservationists, researchers, and the public.
 
@@ -363,7 +363,7 @@ xl:          1280px+
 
 ## 🚀 **Deployment Architecture**
 
-### **Build Process**
+### **Fly.io Deployment Strategy**
 ```bash
 # Development
 npm run dev          # Start development server
@@ -376,13 +376,30 @@ npm run start        # Start production server
 fly deploy           # Deploy to Fly.io
 ```
 
+### **Why Fly.io?**
+- **Cost-Effective**: Free tier for sample projects (up to 3 shared-cpu-1x machines)
+- **Global Edge**: Automatic deployment to 30+ regions worldwide
+- **Zero-Config Scaling**: Scales to zero when not in use
+- **Simple Deployment**: Single command deployment with `fly deploy`
+- **Built-in HTTPS**: Automatic SSL certificates
+- **Docker Native**: Seamless container deployment
+
 ### **Environment Configuration**
 ```env
 # Required Environment Variables
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_token
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Optional: For server-side operations (admin functions)
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
+
+### **Supabase Configuration Notes**
+- **anon/public key**: Safe for browser use, used for client-side operations
+- **service_role key**: Server-side only, full admin access to database
+- **URL format**: `https://[project-id].supabase.co`
+- **Row Level Security**: Recommended to enable for production data protection
 
 ---
 

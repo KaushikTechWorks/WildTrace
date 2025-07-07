@@ -447,6 +447,8 @@ export default function SpeciesMapPage() {
   };
 
   if (!MAPBOX_TOKEN) {
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md text-center">
@@ -455,14 +457,19 @@ export default function SpeciesMapPage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Map Configuration Required</h2>
           <p className="text-gray-600 mb-6">
-            Please configure your Mapbox access token to view the species map.
+            {isProduction 
+              ? "The map service is temporarily unavailable. Please try again later."
+              : "Please configure your Mapbox access token to view the species map."
+            }
           </p>
-          <div className="bg-gray-50 p-4 rounded-lg text-left">
-            <p className="text-sm text-gray-600 mb-2">Add to your .env.local file:</p>
-            <code className="text-xs bg-gray-800 text-green-400 p-2 rounded block">
-              NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_token_here
-            </code>
-          </div>
+          {!isProduction && (
+            <div className="bg-gray-50 p-4 rounded-lg text-left">
+              <p className="text-sm text-gray-600 mb-2">Add to your .env.local file:</p>
+              <code className="text-xs bg-gray-800 text-green-400 p-2 rounded block">
+                NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_token_here
+              </code>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -495,56 +502,53 @@ export default function SpeciesMapPage() {
 
       {/* Enhanced Header */}
       <div className="bg-gradient-to-br from-teal-600 via-emerald-700 to-green-800 shadow-xl border-b border-green-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-6">
-              <div className="bg-white/30 backdrop-blur-sm p-4 rounded-2xl mr-6 shadow-xl border border-white/50">
-                <MapPin className="h-10 w-10 text-white drop-shadow-lg" />
-              </div>
-              <div className="text-left">
-                <h1 className="text-5xl font-bold text-white mb-2 tracking-tight">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="text-center">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
                   Conservation Explorer
                 </h1>
-                <p className="text-xl text-emerald-100 font-light leading-relaxed max-w-2xl">
+                <p className="text-lg sm:text-xl text-emerald-100 font-light leading-relaxed max-w-2xl px-4 sm:px-0">
                   Discover and support wildlife protection efforts
                 </p>
               </div>
             </div>
             
             {/* Quick Filter Pills */}
-            <div className="flex justify-center mt-6">
-              <div className="flex flex-wrap gap-3">
+            <div className="flex justify-center mt-4 sm:mt-6">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center px-4 sm:px-0">
                 <button
                   onClick={() => handleFilterChange('species')}
-                  className={`flex items-center space-x-2 px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 ${
+                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 text-sm sm:text-base ${
                     filters.species 
                       ? 'bg-red-500 border-red-400 text-white shadow-lg' 
                       : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
                   }`}
                 >
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
                   <span className="font-medium">Wildlife</span>
                 </button>
                 <button
                   onClick={() => handleFilterChange('sanctuaries')}
-                  className={`flex items-center space-x-2 px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 ${
+                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 text-sm sm:text-base ${
                     filters.sanctuaries 
                       ? 'bg-green-500 border-green-400 text-white shadow-lg' 
                       : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
                   }`}
                 >
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
                   <span className="font-medium">Sanctuaries</span>
                 </button>
                 <button
                   onClick={() => handleFilterChange('schoolProjects')}
-                  className={`flex items-center space-x-2 px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 ${
+                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 text-sm sm:text-base ${
                     filters.schoolProjects 
                       ? 'bg-blue-500 border-blue-400 text-white shadow-lg' 
                       : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
                   }`}
                 >
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full"></div>
                   <span className="font-medium">Education</span>
                 </button>
               </div>
@@ -552,25 +556,25 @@ export default function SpeciesMapPage() {
           </div>
           
           {/* Enhanced Search and Filter Bar */}
-          <div className="bg-white/15 backdrop-blur-md rounded-2xl p-6 border border-white/30 shadow-xl">
-            <div className="flex flex-col lg:flex-row gap-4 items-center">
+          <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/30 shadow-xl mx-4 sm:mx-0">
+            <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 items-center">
               {/* Search Input */}
-              <div className="flex-1 relative group">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/80 group-focus-within:text-white transition-colors" />
+              <div className="flex-1 w-full relative group">
+                <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-white/80 group-focus-within:text-white transition-colors" />
                 <input
                   type="text"
-                  placeholder="Search wildlife, locations, or protection projects..."
+                  placeholder="Search wildlife, locations, or projects..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 focus:bg-white/25 transition-all"
+                  className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 focus:bg-white/25 transition-all text-sm sm:text-base"
                 />
               </div>
               
               {/* Filter Button */}
-              <div className="relative">
+              <div className="relative w-full lg:w-auto">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center space-x-2 bg-white text-green-700 hover:bg-green-50 px-6 py-3 rounded-xl border-2 border-white/60 hover:border-green-200 transition-all hover:scale-105 hover:shadow-lg backdrop-blur-sm font-medium"
+                  className="flex items-center justify-center space-x-2 bg-white text-green-700 hover:bg-green-50 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border-2 border-white/60 hover:border-green-200 transition-all hover:scale-105 hover:shadow-lg backdrop-blur-sm font-medium w-full lg:w-auto text-sm sm:text-base"
                 >
                   <Filter className="h-4 w-4" />
                   <span>Filters</span>
@@ -585,14 +589,14 @@ export default function SpeciesMapPage() {
                 
                 {/* Enhanced Filter Dropdown */}
                 {showFilters && (
-                  <div className="absolute top-full right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 min-w-[320px] z-50 backdrop-blur-sm">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-bold text-gray-900 text-lg">Map Layers</h3>
+                  <div className="absolute top-full left-0 right-0 lg:right-0 lg:left-auto mt-3 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 sm:p-6 min-w-[280px] sm:min-w-[320px] z-50 backdrop-blur-sm mx-4 lg:mx-0">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                      <h3 className="font-bold text-gray-900 text-base sm:text-lg">Map Layers</h3>
                       <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                         Toggle visibility
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
                       Control which markers are visible on the map
                     </p>
                     <div className="space-y-4">
@@ -678,7 +682,7 @@ export default function SpeciesMapPage() {
       </div>
 
       {/* Map Container */}
-      <div className="relative h-screen">
+      <div className="relative h-[calc(100vh-200px)] sm:h-[calc(100vh-250px)] lg:h-screen">
         <div ref={mapContainerRef} className="w-full h-full" />
         
         {/* Loading Overlay */}
@@ -693,18 +697,23 @@ export default function SpeciesMapPage() {
 
         {/* Enhanced Detail Panel */}
         {selectedMarker && (
-          <div className="absolute top-4 right-4 bg-white rounded-2xl shadow-2xl max-w-md w-full z-50 overflow-hidden border border-gray-200">
+          <div className="fixed inset-x-0 bottom-0 lg:absolute lg:top-4 lg:right-4 lg:inset-x-auto lg:bottom-auto bg-white rounded-t-2xl lg:rounded-2xl shadow-2xl max-w-full lg:max-w-md w-full z-50 overflow-hidden border border-gray-200 max-h-[80vh] lg:max-h-none">
             <div className="relative">
+              {/* Mobile drag handle */}
+              <div className="lg:hidden flex justify-center pt-2 pb-1">
+                <div className="w-8 h-1 bg-gray-300 rounded-full"></div>
+              </div>
+              
               {/* Close Button */}
               <button
                 onClick={() => setSelectedMarker(null)}
-                className="absolute top-3 right-3 bg-white/95 hover:bg-white rounded-full p-2 z-10 shadow-lg transition-all duration-200 hover:scale-110"
+                className="absolute top-2 lg:top-3 right-3 bg-white/95 hover:bg-white rounded-full p-2 z-10 shadow-lg transition-all duration-200 hover:scale-110"
               >
-                <X className="h-5 w-5 text-gray-600" />
+                <X className="h-4 w-4 lg:h-5 lg:w-5 text-gray-600" />
               </button>
               
               {/* Enhanced Image Section */}
-              <div className="h-56 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+              <div className="h-48 sm:h-56 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
                 {getImageSrc(selectedMarker.data.imageUrl, null) ? (
                   <img
                     src={selectedMarker.data.imageUrl}
@@ -714,43 +723,43 @@ export default function SpeciesMapPage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                    {selectedMarker.type === 'species' && <Leaf className="h-20 w-20 text-gray-400" />}
-                    {selectedMarker.type === 'sanctuary' && <Building className="h-20 w-20 text-gray-400" />}
-                    {selectedMarker.type === 'schoolProject' && <GraduationCap className="h-20 w-20 text-gray-400" />}
+                    {selectedMarker.type === 'species' && <Leaf className="h-16 w-16 sm:h-20 sm:w-20 text-gray-400" />}
+                    {selectedMarker.type === 'sanctuary' && <Building className="h-16 w-16 sm:h-20 sm:w-20 text-gray-400" />}
+                    {selectedMarker.type === 'schoolProject' && <GraduationCap className="h-16 w-16 sm:h-20 sm:w-20 text-gray-400" />}
                   </div>
                 )}
                 
                 {/* Enhanced Type Badge */}
                 <div className="absolute top-3 left-3">
                   {selectedMarker.type === 'species' && (
-                    <span className="bg-red-500 text-white px-3 py-2 rounded-full text-sm font-semibold shadow-lg">
+                    <span className="bg-red-500 text-white px-2 sm:px-3 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg">
                       🦁 Wildlife
                     </span>
                   )}
                   {selectedMarker.type === 'sanctuary' && (
-                    <span className="bg-green-500 text-white px-3 py-2 rounded-full text-sm font-semibold shadow-lg">
+                    <span className="bg-green-500 text-white px-2 sm:px-3 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg">
                       🏞️ Sanctuary
                     </span>
                   )}
                   {selectedMarker.type === 'schoolProject' && (
-                    <span className="bg-blue-500 text-white px-3 py-2 rounded-full text-sm font-semibold shadow-lg">
+                    <span className="bg-blue-500 text-white px-2 sm:px-3 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg">
                       🎓 Education
                     </span>
                   )}
                 </div>
 
                 {/* Gradient Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-12 sm:h-16 bg-gradient-to-t from-black/30 to-transparent"></div>
               </div>
               
               {/* Enhanced Content Section */}
-              <div className="p-6">
-                <div className="mb-4">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2 leading-tight">
+              <div className="p-4 sm:p-6 max-h-96 overflow-y-auto">
+                <div className="mb-3 sm:mb-4">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 leading-tight">
                     {selectedMarker.data.name}
                   </h3>
                   {selectedMarker.type === 'species' && (
-                    <p className="text-gray-600 italic font-medium">
+                    <p className="text-gray-600 italic font-medium text-sm sm:text-base">
                       {selectedMarker.data.scientificName}
                     </p>
                   )}
