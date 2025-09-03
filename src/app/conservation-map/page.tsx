@@ -1,8 +1,14 @@
-'use client';
+"use client";
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
-import { Search, Filter, MapPin, Leaf, GraduationCap, Building, X, ChevronDown } from 'lucide-react';
+import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import mockData from '@/lib/mockData';
+import { Search, Filter, MapPin, Leaf, GraduationCap, Building, X, ChevronDown, ChevronLeft } from 'lucide-react';
+
+const MapboxMap = dynamic(() => import('@/components/MapboxMap'), { ssr: false });
 
 // Initialize Mapbox
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
@@ -12,265 +18,6 @@ if (MAPBOX_TOKEN) {
 } else {
   console.error('NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN is not available');
 }
-
-// Mock data for global conservation map
-const mockData = {
-  species: [
-    {
-      id: 1,
-      name: "Snow Leopard",
-      scientificName: "Panthera uncia",
-      status: "Vulnerable",
-      location: [86.9250, 27.9881], // Nepal
-      population: "2,500-10,000",
-      threats: ["Habitat loss", "Poaching", "Climate change"],
-      imageUrl: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=400&h=300&fit=crop", // Snow leopard in mountains
-      description: "The snow leopard is a large cat native to the mountain ranges of Central and South Asia."
-    },
-    {
-      id: 2,
-      name: "African Elephant",
-      scientificName: "Loxodonta africana",
-      status: "Endangered",
-      location: [21.0285, -18.6657], // Botswana
-      population: "415,000",
-      threats: ["Poaching", "Habitat fragmentation", "Human-wildlife conflict"],
-      imageUrl: "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=400&h=300&fit=crop", // African elephant in savanna
-      description: "African elephants are the largest land animals on Earth, crucial for ecosystem health."
-    },
-    {
-      id: 3,
-      name: "Giant Panda",
-      scientificName: "Ailuropoda melanoleuca",
-      status: "Vulnerable",
-      location: [104.1954, 35.8617], // China
-      population: "1,864",
-      threats: ["Habitat loss", "Low reproductive rate"],
-      imageUrl: "https://images.unsplash.com/photo-1527118732049-c88155f2107c?w=400&h=300&fit=crop", // Giant panda eating bamboo
-      description: "Giant pandas are a conservation success story, with populations slowly recovering."
-    },
-    {
-      id: 4,
-      name: "Jaguarundi",
-      scientificName: "Herpailurus yagouaroundi",
-      status: "Least Concern",
-      location: [-60.0261, -3.4653], // Brazil Amazon
-      population: "Unknown",
-      threats: ["Habitat loss", "Hunting"],
-      imageUrl: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=400&h=300&fit=crop", // Small wild cat
-      description: "A small wild cat native to the Americas, often mistaken for other species."
-    },
-    {
-      id: 5,
-      name: "Koala",
-      scientificName: "Phascolarctos cinereus",
-      status: "Vulnerable",
-      location: [151.2093, -33.8688], // Australia
-      population: "300,000",
-      threats: ["Habitat loss", "Disease", "Climate change"],
-      imageUrl: "https://images.unsplash.com/photo-1459262838948-3e2de6c1ec80?w=400&h=300&fit=crop", // Koala in eucalyptus tree
-      description: "Koalas are iconic Australian marsupials facing severe threats from habitat destruction."
-    },
-    {
-      id: 6,
-      name: "Polar Bear",
-      scientificName: "Ursus maritimus",
-      status: "Vulnerable",
-      location: [-97.1384, 69.5037], // Arctic Canada
-      population: "26,000",
-      threats: ["Climate change", "Sea ice loss", "Pollution"],
-      imageUrl: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop", // Polar bear on ice
-      description: "Polar bears depend on sea ice for hunting and are threatened by climate change."
-    },
-    {
-      id: 7,
-      name: "Sumatran Tiger",
-      scientificName: "Panthera tigris sumatrae",
-      status: "Critically Endangered",
-      location: [101.6869, -0.7893], // Sumatra, Indonesia
-      population: "400-500",
-      threats: ["Deforestation", "Poaching", "Human encroachment"],
-      imageUrl: "https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=300&fit=crop", // Tiger in jungle
-      description: "The smallest of all tiger subspecies, found only on the Indonesian island of Sumatra."
-    },
-    {
-      id: 8,
-      name: "Mountain Gorilla",
-      scientificName: "Gorilla beringei beringei",
-      status: "Critically Endangered",
-      location: [29.5794, -1.6778], // Rwanda
-      population: "1,000",
-      threats: ["Habitat loss", "Disease", "Civil unrest"],
-      imageUrl: "https://images.unsplash.com/photo-1580852300654-03c803a14e24?w=400&h=300&fit=crop", // Mountain gorilla
-      description: "Mountain gorillas live in the cloud forests of Rwanda, Uganda, and Democratic Republic of Congo."
-    },
-    {
-      id: 9,
-      name: "Amur Leopard",
-      scientificName: "Panthera pardus orientalis",
-      status: "Critically Endangered",
-      location: [131.9041, 45.0339], // Primorsky Krai, Russia
-      population: "120-140",
-      threats: ["Poaching", "Habitat fragmentation", "Prey depletion"],
-      imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop", // Leopard in forest
-      description: "The world's rarest big cat, adapted to life in the temperate forests of Far East Russia."
-    }
-  ],
-  sanctuaries: [
-    {
-      id: 1,
-      name: "Maasai Mara National Reserve",
-      location: [35.1656, -1.4061], // Kenya
-      area: "1,510 km²",
-      established: "1961",
-      species: ["Lions", "Elephants", "Cheetahs", "Zebras"],
-      imageUrl: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&h=300&fit=crop", // African savanna with animals
-      description: "One of Africa's most famous wildlife reserves, known for the Great Migration."
-    },
-    {
-      id: 2,
-      name: "Yellowstone National Park",
-      location: [-110.5885, 44.4280], // USA
-      area: "8,991 km²",
-      established: "1872",
-      species: ["Grizzly Bears", "Wolves", "Bison", "Elk"],
-      imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop", // Yellowstone landscape
-      description: "America's first national park, home to diverse wildlife and geothermal features."
-    },
-    {
-      id: 3,
-      name: "Kaziranga National Park",
-      location: [93.3714, 26.5775], // India
-      area: "858 km²",
-      established: "1905",
-      species: ["One-horned Rhinoceros", "Tigers", "Elephants", "Wild Water Buffalo"],
-      imageUrl: "https://images.unsplash.com/photo-1594736797933-d0ebebcc6a2b?w=400&h=300&fit=crop", // Rhino in grassland
-      description: "UNESCO World Heritage site famous for its population of one-horned rhinoceros."
-    },
-    {
-      id: 4,
-      name: "Galápagos National Park",
-      location: [-90.3312, -0.7893], // Ecuador
-      area: "7,665 km²",
-      established: "1959",
-      species: ["Giant Tortoises", "Marine Iguanas", "Darwin's Finches", "Blue-footed Boobies"],
-      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop", // Galápagos tortoise
-      description: "The islands that inspired Darwin's theory of evolution, with unique endemic species."
-    },
-    {
-      id: 5,
-      name: "Kruger National Park",
-      location: [31.5982, -24.0058], // South Africa
-      area: "19,485 km²",
-      established: "1898",
-      species: ["Lions", "Leopards", "Rhinos", "Elephants", "Buffalos"],
-      imageUrl: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&h=300&fit=crop", // African savanna landscape
-      description: "One of Africa's largest game reserves and a flagship conservation area."
-    },
-    {
-      id: 6,
-      name: "Great Bear Rainforest",
-      location: [-128.1089, 52.1579], // British Columbia, Canada
-      area: "6,400 km²",
-      established: "2006",
-      species: ["Spirit Bears", "Grizzly Bears", "Wolves", "Salmon"],
-      imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop", // Temperate rainforest canopy
-      description: "The largest temperate rainforest preserve, home to the rare white spirit bear."
-    },
-    {
-      id: 7,
-      name: "Ranthambore National Park",
-      location: [76.5048, 26.0173], // Rajasthan, India
-      area: "1,334 km²",
-      established: "1980",
-      species: ["Bengal Tigers", "Leopards", "Sloth Bears", "Crocodiles"],
-      imageUrl: "https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=300&fit=crop", // Bengal tiger in natural habitat
-      description: "Famous for its Bengal tiger population and ancient fort ruins."
-    }
-  ],
-  schoolProjects: [
-    {
-      id: 1,
-      name: "Green Schools Initiative",
-      school: "Riverside Elementary",
-      location: [-74.0059, 40.7128], // New York, USA
-      participants: 250,
-      focus: "Urban Wildlife Conservation",
-      imageUrl: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=400&h=300&fit=crop", // Children studying nature
-      description: "Students are creating urban wildlife corridors and monitoring local bird populations."
-    },
-    {
-      id: 2,
-      name: "Ocean Guardians",
-      school: "Coastal High School",
-      location: [151.2093, -33.8688], // Sydney, Australia
-      participants: 180,
-      focus: "Marine Life Protection",
-      imageUrl: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=400&h=300&fit=crop", // Students at beach cleanup
-      description: "Students monitor local beaches and coral reefs, contributing to marine conservation efforts."
-    },
-    {
-      id: 3,
-      name: "Rainforest Rangers",
-      school: "Amazon International School",
-      location: [-60.0261, -3.4653], // Amazon, Brazil
-      participants: 120,
-      focus: "Rainforest Conservation",
-      imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop", // Rainforest canopy
-      description: "Students work directly with local communities to protect rainforest habitats."
-    },
-    {
-      id: 4,
-      name: "Savanna Stewards",
-      school: "Nairobi Academy",
-      location: [36.8219, -1.2921], // Nairobi, Kenya
-      participants: 200,
-      focus: "Wildlife Protection",
-      imageUrl: "https://images.unsplash.com/photo-1551135049-8a33b5883817?w=400&h=300&fit=crop", // Students with wildlife research
-      description: "Students participate in wildlife monitoring and anti-poaching awareness campaigns."
-    },
-    {
-      id: 5,
-      name: "Arctic Explorers",
-      school: "Northern Lights School",
-      location: [-105.3568, 63.7467], // Northwest Territories, Canada
-      participants: 85,
-      focus: "Arctic Wildlife Research",
-      imageUrl: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=400&h=300&fit=crop", // Arctic polar bear landscape
-      description: "Students study the impact of climate change on arctic wildlife and ecosystems."
-    },
-    {
-      id: 6,
-      name: "Coral Reef Guardians",
-      school: "Great Barrier Academy",
-      location: [145.7781, -16.2859], // Cairns, Australia
-      participants: 300,
-      focus: "Marine Ecosystem Protection",
-      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop", // Coral reef underwater
-      description: "Students monitor coral health and participate in reef restoration projects."
-    },
-    {
-      id: 7,
-      name: "Panda Conservation Club",
-      school: "Chengdu International School",
-      location: [104.0647, 30.5728], // Chengdu, China
-      participants: 150,
-      focus: "Giant Panda Research",
-      imageUrl: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&h=300&fit=crop", // Giant panda in bamboo
-      description: "Students work with local panda reserves to support breeding and habitat programs."
-    },
-    {
-      id: 8,
-      name: "Desert Wildlife Watchers",
-      school: "Sahara Academy",
-      location: [1.6596, 28.0339], // Algeria
-      participants: 90,
-      focus: "Desert Conservation",
-      imageUrl: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop", // Desert landscape with dunes
-      description: "Students study adaptation strategies of desert wildlife and water conservation."
-    }
-  ]
-};
 
 interface FilterState {
   species: boolean;
@@ -284,12 +31,12 @@ interface SelectedMarker {
 }
 
 export default function SpeciesMapPage() {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
+  // Map rendering is delegated to MapboxMap component
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [showMobileControls, setShowMobileControls] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(null);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<FilterState>({
@@ -298,132 +45,19 @@ export default function SpeciesMapPage() {
     schoolProjects: true
   });
 
-  const addMarkers = useCallback((map: mapboxgl.Map) => {
-    // Clear existing markers
-    const existingMarkers = document.querySelectorAll('.mapboxgl-marker');
-    existingMarkers.forEach(marker => marker.remove());
-
-    // Add species markers
-    if (filters.species) {
-      mockData.species.forEach(species => {
-        const el = document.createElement('div');
-        el.className = 'marker species-marker';
-        el.innerHTML = `
-          <div class="w-8 h-8 bg-red-500 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
-            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 3C6.686 3 4 5.686 4 9c0 5.25 6 11 6 11s6-5.75 6-11c0-3.314-2.686-6-6-6z"/>
-              <circle cx="10" cy="9" r="2"/>
-            </svg>
-          </div>
-        `;
-        
-        el.addEventListener('click', () => {
-          setSelectedMarker({ type: 'species', data: species });
-        });
-
-        new mapboxgl.Marker(el)
-          .setLngLat(species.location as [number, number])
-          .addTo(map);
-      });
-    }
-
-    // Add sanctuary markers
-    if (filters.sanctuaries) {
-      mockData.sanctuaries.forEach(sanctuary => {
-        const el = document.createElement('div');
-        el.className = 'marker sanctuary-marker';
-        el.innerHTML = `
-          <div class="w-8 h-8 bg-green-500 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
-            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 3C6.686 3 4 5.686 4 9c0 5.25 6 11 6 11s6-5.75 6-11c0-3.314-2.686-6-6-6z"/>
-              <circle cx="10" cy="9" r="2"/>
-            </svg>
-          </div>
-        `;
-        
-        el.addEventListener('click', () => {
-          setSelectedMarker({ type: 'sanctuary', data: sanctuary });
-        });
-
-        new mapboxgl.Marker(el)
-          .setLngLat(sanctuary.location as [number, number])
-          .addTo(map);
-      });
-    }
-
-    // Add school project markers
-    if (filters.schoolProjects) {
-      mockData.schoolProjects.forEach(project => {
-        const el = document.createElement('div');
-        el.className = 'marker school-marker';
-        el.innerHTML = `
-          <div class="w-8 h-8 bg-blue-500 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
-            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 3C6.686 3 4 5.686 4 9c0 5.25 6 11 6 11s6-5.75 6-11c0-3.314-2.686-6-6-6z"/>
-              <circle cx="10" cy="9" r="2"/>
-            </svg>
-          </div>
-        `;
-        
-        el.addEventListener('click', () => {
-          setSelectedMarker({ type: 'schoolProject', data: project });
-        });
-
-        new mapboxgl.Marker(el)
-          .setLngLat(project.location as [number, number])
-          .addTo(map);
-      });
-    }
-  }, [filters, setSelectedMarker]);
-
-  // Initialize map
+  // Close the selected detail panel with Escape for accessibility
   useEffect(() => {
-    if (!MAPBOX_TOKEN) {
-      console.error('Mapbox access token is required');
-      setMapError('Mapbox access token is required. Please configure the NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN environment variable.');
-      return;
-    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (selectedMarker) setSelectedMarker(null);
+        if (showMobileControls) setShowMobileControls(false);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedMarker, showMobileControls]);
 
-    if (!mapContainerRef.current) return;
-
-    try {
-      const map = new mapboxgl.Map({
-        container: mapContainerRef.current,
-        style: 'mapbox://styles/mapbox/outdoors-v12',
-        center: [20, 20], // Global center
-        zoom: 2 // Global zoom level
-      });
-
-      map.on('load', () => {
-        setMapLoaded(true);
-        addMarkers(map);
-      });
-
-      map.on('error', (e) => {
-        console.error('Mapbox error:', e);
-        setMapError('Failed to load the map. Please check your internet connection and try again.');
-      });
-
-      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-      mapRef.current = map;
-
-      return () => {
-        if (mapRef.current) {
-          mapRef.current.remove();
-        }
-      };
-    } catch (error) {
-      console.error('Map initialization error:', error);
-      setMapError('Failed to initialize the map. Please refresh the page and try again.');
-    }
-  }, []);
-
-  // Update markers when filters change
-  useEffect(() => {
-    if (mapRef.current && mapLoaded) {
-      addMarkers(mapRef.current);
-    }
-  }, [filters, mapLoaded, addMarkers]);
+  // Map is now handled by the MapboxMap component (dynamically loaded)
 
   const handleImageError = (imageUrl: string) => {
     setImageErrors(prev => new Set(prev).add(imageUrl));
@@ -442,6 +76,40 @@ export default function SpeciesMapPage() {
       [filterType]: !prev[filterType]
     }));
   };
+
+  // Search handler: find first matching item (by name/scientificName/school) and open detail
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return;
+
+    const all: Array<{ type: 'species'|'sanctuary'|'schoolProject'; item: any }> = [];
+    mockData.species.forEach((s: any) => all.push({ type: 'species', item: s }));
+    mockData.sanctuaries.forEach((s: any) => all.push({ type: 'sanctuary', item: s }));
+    mockData.schoolProjects.forEach((p: any) => all.push({ type: 'schoolProject', item: p }));
+
+    const found = all.find(({ item }) => {
+      const name = (item.name || item.school || '').toString().toLowerCase();
+      const sci = (item.scientificName || '').toString().toLowerCase();
+      return name.includes(q) || sci.includes(q);
+    });
+
+    if (found) {
+      setSelectedMarker({ type: found.type, data: found.item });
+      setMapError(null);
+      // focus the map container if available
+      const el = document.querySelector('[data-map-container]') as HTMLElement | null;
+      if (el) el.focus();
+    } else {
+      setMapError(`No results for "${searchQuery}"`);
+      window.setTimeout(() => setMapError(null), 3000);
+    }
+  };
+
+  // Stable handler for map selection to avoid remounting the MapboxMap component
+  const handleMapSelect = useCallback((type: 'species'|'sanctuary'|'schoolProject', item: any) => {
+    setSelectedMarker({ type: type as any, data: item });
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -492,10 +160,17 @@ export default function SpeciesMapPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Navigation */}
-      <header className="bg-white shadow-sm border-b border-green-100">
+  <header className="bg-white shadow-sm border-b border-green-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
+              {/* Mobile-only back button — visible on small screens, hidden on md+ */}
+              <div className="md:hidden">
+                <Link href="/" aria-label="Back to Dashboard" className="inline-flex items-center space-x-2 mr-2 bg-white/95 hover:bg-white px-2 py-1 rounded-lg shadow-sm">
+                  <ChevronLeft className="h-5 w-5 text-green-700" />
+                  <span className="text-sm font-medium text-green-700">Back</span>
+                </Link>
+              </div>
               <div className="conservation-gradient p-2 rounded-lg">
                 <Leaf className="h-8 w-8 text-white" />
               </div>
@@ -526,60 +201,31 @@ export default function SpeciesMapPage() {
               </div>
             </div>
             
-            {/* Quick Filter Pills */}
-            <div className="flex justify-center mt-4 sm:mt-6">
-              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center px-4 sm:px-0">
-                <button
-                  onClick={() => handleFilterChange('species')}
-                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 text-sm sm:text-base ${
-                    filters.species 
-                      ? 'bg-red-500 border-red-400 text-white shadow-lg' 
-                      : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
-                  }`}
-                >
-                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
-                  <span className="font-medium">Wildlife</span>
-                </button>
-                <button
-                  onClick={() => handleFilterChange('sanctuaries')}
-                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 text-sm sm:text-base ${
-                    filters.sanctuaries 
-                      ? 'bg-green-500 border-green-400 text-white shadow-lg' 
-                      : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
-                  }`}
-                >
-                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
-                  <span className="font-medium">Sanctuaries</span>
-                </button>
-                <button
-                  onClick={() => handleFilterChange('schoolProjects')}
-                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-5 py-2 rounded-full border-2 transition-all duration-300 hover:scale-105 text-sm sm:text-base ${
-                    filters.schoolProjects 
-                      ? 'bg-blue-500 border-blue-400 text-white shadow-lg' 
-                      : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
-                  }`}
-                >
-                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full"></div>
-                  <span className="font-medium">Education</span>
-                </button>
-              </div>
-            </div>
+            {/* Removed header quick-filter pills to avoid duplicate controls; floating controls handle filters */}
           </div>
           
           {/* Enhanced Search and Filter Bar */}
           <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/30 shadow-xl mx-4 sm:mx-0">
             <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 items-center">
               {/* Search Input */}
-              <div className="flex-1 w-full relative group">
+              <form onSubmit={handleSearch} className="flex-1 w-full relative group">
                 <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-white/80 group-focus-within:text-white transition-colors" />
                 <input
                   type="text"
                   placeholder="Search wildlife, locations, or projects..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 focus:bg-white/25 transition-all text-sm sm:text-base"
+                  className="w-full pl-10 sm:pl-12 pr-12 sm:pr-14 py-2.5 sm:py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 focus:bg-white/25 transition-all text-sm sm:text-base"
                 />
-              </div>
+                <button
+                  type="submit"
+                  aria-label="Search"
+                  className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white rounded-md px-3 py-1 text-sm flex items-center gap-2"
+                >
+                  <Search className="h-4 w-4" />
+                  <span className="hidden sm:inline">Search</span>
+                </button>
+              </form>
               
               {/* Filter Button */}
               <div className="relative w-full lg:w-auto">
@@ -600,7 +246,8 @@ export default function SpeciesMapPage() {
                 
                 {/* Enhanced Filter Dropdown */}
                 {showFilters && (
-                  <div className="absolute top-full left-0 right-0 lg:right-0 lg:left-auto mt-3 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 sm:p-6 min-w-[280px] sm:min-w-[320px] z-50 backdrop-blur-sm mx-4 lg:mx-0">
+                  /* Use fixed positioning on small screens so the dropdown isn't clipped by the map container; keep absolute on lg+ */
+                  <div className="fixed lg:absolute top-28 sm:top-32 left-4 right-4 lg:right-0 lg:left-auto mt-0 lg:mt-3 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 sm:p-6 min-w-[280px] sm:min-w-[320px] z-60 backdrop-blur-sm mx-0 lg:mx-0">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
                       <h3 className="font-bold text-gray-900 text-base sm:text-lg">Map Layers</h3>
                       <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
@@ -694,7 +341,108 @@ export default function SpeciesMapPage() {
 
       {/* Map Container */}
       <div className="relative h-[calc(100vh-200px)] sm:h-[calc(100vh-250px)] lg:h-screen">
-        <div ref={mapContainerRef} className="w-full h-full" />
+        <div className="w-full h-full">
+          <MapboxMap
+            data={mockData}
+            filters={filters}
+            onSelect={handleMapSelect}
+            mapboxToken={MAPBOX_TOKEN}
+            onLoad={() => { setMapLoaded(true); setMapError(null); }}
+            onError={(msg) => { setMapError(msg); setMapLoaded(false); }}
+          />
+        </div>
+  {/* Floating Controls (top-right) - visible on large screens only; hidden on small/mobile */}
+  {/* Desktop controls (large screens) */}
+  <div className="absolute top-4 left-4 z-40 hidden lg:block">
+    <div className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-lg shadow-lg p-2 flex flex-col gap-2 w-40">
+      <div className="text-xs font-semibold text-gray-700 px-1">Map Controls</div>
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={() => handleFilterChange('species')}
+          className={`text-xs flex items-center justify-between px-3 py-2 rounded-md ${filters.species ? 'bg-red-50 text-red-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+          aria-pressed={filters.species}
+        >
+          <span>Wildlife</span>
+          <span className="w-3 h-3 bg-red-500 rounded-full" />
+        </button>
+        <button
+          onClick={() => handleFilterChange('sanctuaries')}
+          className={`text-xs flex items-center justify-between px-3 py-2 rounded-md ${filters.sanctuaries ? 'bg-green-50 text-green-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+          aria-pressed={filters.sanctuaries}
+        >
+          <span>Sanctuaries</span>
+          <span className="w-3 h-3 bg-green-500 rounded-full" />
+        </button>
+        <button
+          onClick={() => handleFilterChange('schoolProjects')}
+          className={`text-xs flex items-center justify-between px-3 py-2 rounded-md ${filters.schoolProjects ? 'bg-blue-50 text-blue-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+          aria-pressed={filters.schoolProjects}
+        >
+          <span>Education</span>
+          <span className="w-3 h-3 bg-blue-500 rounded-full" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {/* Mobile Controls Toggle (small screens) */}
+  <div className="absolute bottom-6 left-4 z-50 lg:hidden">
+    <button
+      onClick={() => setShowMobileControls(true)}
+      className="bg-white/95 border border-gray-100 rounded-full p-3 shadow-lg flex items-center gap-2"
+      aria-label="Open map controls"
+    >
+      <Filter className="h-4 w-4 text-green-700" />
+      <span className="text-sm text-gray-800">Filters</span>
+    </button>
+  </div>
+
+  {/* Mobile Slide-over Controls */}
+  {showMobileControls && (
+    <div className="fixed inset-0 z-60 lg:hidden">
+      <div className="absolute inset-0 bg-black/40" onClick={() => setShowMobileControls(false)} aria-hidden="true" />
+      <div className="absolute left-0 bottom-0 w-full bg-white rounded-t-2xl shadow-2xl p-4 max-h-[60vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-sm font-semibold">Map Controls</div>
+          <button onClick={() => setShowMobileControls(false)} className="p-2 rounded-md bg-gray-100">
+            <X className="h-4 w-4 text-gray-700" />
+          </button>
+        </div>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={() => { handleFilterChange('species'); }}
+            className={`text-sm flex items-center justify-between px-3 py-2 rounded-md ${filters.species ? 'bg-red-50 text-red-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+            aria-pressed={filters.species}
+          >
+            <span>Wildlife</span>
+            <span className="w-3 h-3 bg-red-500 rounded-full" />
+          </button>
+          <button
+            onClick={() => { handleFilterChange('sanctuaries'); }}
+            className={`text-sm flex items-center justify-between px-3 py-2 rounded-md ${filters.sanctuaries ? 'bg-green-50 text-green-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+            aria-pressed={filters.sanctuaries}
+          >
+            <span>Sanctuaries</span>
+            <span className="w-3 h-3 bg-green-500 rounded-full" />
+          </button>
+          <button
+            onClick={() => { handleFilterChange('schoolProjects'); }}
+            className={`text-sm flex items-center justify-between px-3 py-2 rounded-md ${filters.schoolProjects ? 'bg-blue-50 text-blue-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+            aria-pressed={filters.schoolProjects}
+          >
+            <span>Education</span>
+            <span className="w-3 h-3 bg-blue-500 rounded-full" />
+          </button>
+        </div>
+        <div className="flex gap-2 mt-4">
+          <button onClick={() => setFilters({ species: true, sanctuaries: true, schoolProjects: true })} className="flex-1 bg-gray-100 px-3 py-2 rounded-md">Show All</button>
+          <button onClick={() => setFilters({ species: false, sanctuaries: false, schoolProjects: false })} className="flex-1 bg-gray-100 px-3 py-2 rounded-md">Hide All</button>
+        </div>
+      </div>
+    </div>
+  )}
+
+  {/* Left legend removed per request */}
         
         {/* Error Overlay */}
         {mapError && (
@@ -745,12 +493,15 @@ export default function SpeciesMapPage() {
               {/* Enhanced Image Section */}
               <div className="h-48 sm:h-56 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
                 {getImageSrc(selectedMarker.data.imageUrl, null) ? (
-                  <img
-                    src={selectedMarker.data.imageUrl}
-                    alt={selectedMarker.data.name}
-                    className="w-full h-full object-cover"
-                    onError={() => handleImageError(selectedMarker.data.imageUrl)}
-                  />
+                  <div className="w-full h-full relative">
+                    <Image
+                      src={selectedMarker.data.imageUrl}
+                      alt={selectedMarker.data.name}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
                     {selectedMarker.type === 'species' && <Leaf className="h-16 w-16 sm:h-20 sm:w-20 text-gray-400" />}

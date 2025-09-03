@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { 
   Heart, 
   Users, 
@@ -98,11 +99,15 @@ export function SchoolProjectCard({ project, onSupport, onContact }: SchoolProje
   return (
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow">
       {project.images.length > 0 && (
-        <img 
-          src={project.images[0]} 
-          alt={project.projectTitle}
-          className="w-full h-48 object-cover"
-        />
+        <div className="w-full h-48 relative">
+          <Image
+            src={project.images[0]}
+            alt={project.projectTitle}
+            fill
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="object-cover"
+          />
+        </div>
       )}
       
       <div className="p-6">
@@ -196,11 +201,15 @@ export function SanctuaryCard({ sanctuary, onDonate, onVolunteer, onVisit }: San
   return (
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow">
       {sanctuary.images.length > 0 && (
-        <img 
-          src={sanctuary.images[0]} 
-          alt={sanctuary.name}
-          className="w-full h-48 object-cover"
-        />
+        <div className="w-full h-48 relative">
+          <Image
+            src={sanctuary.images[0]}
+            alt={sanctuary.name}
+            fill
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="object-cover"
+          />
+        </div>
       )}
       
       <div className="p-6">
