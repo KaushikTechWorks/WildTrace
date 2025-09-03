@@ -64,7 +64,7 @@ const mockData = {
       location: [-97.1384, 69.5037], // Arctic Canada
       population: "26,000",
       threats: ["Climate change", "Sea ice loss", "Pollution"],
-      imageUrl: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?w=400&h=300&fit=crop",
       description: "Polar bears depend on sea ice for hunting and are threatened by climate change."
     },
     {
@@ -97,7 +97,7 @@ const mockData = {
       location: [131.9041, 45.0339], // Primorsky Krai, Russia
       population: "120-140",
       threats: ["Poaching", "Habitat fragmentation", "Prey depletion"],
-      imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1551651936-4f1e72a3094e?w=400&h=300&fit=crop",
       description: "The world's rarest big cat, adapted to life in the temperate forests of Far East Russia."
     }
   ],
